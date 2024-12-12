@@ -1,0 +1,60 @@
+avec ce code : 
+const puppeteer = require('puppeteer');
+const fs = require('fs');
+
+async function run() {
+    const browser = await puppeteer.launch({
+        headless: false
+    });
+    const page = await browser.newPage();
+    // Naviguer vers l'URL cible
+    await page.goto('https://micmonster.com/');
+
+    // Changement de langue
+    await page.waitForSelector('#languages', { visible: true });
+    await page.click('#languages');
+    await page.type('#languages', 'French (France)');
+    await page.keyboard.press('Enter');
+
+    // Changement de voix
+    await page.waitForSelector('#voices', { visible: true });
+    await page.click('#voices');
+    await page.type('#voices', 'Jacqueline');
+    await page.keyboard.press('Enter');
+
+    // Lire les fichiers texte
+    const files = fs.readdirSync('./video');
+    const textFiles = files.filter(file => file.endsWith('.txt') && fs.statSync(`./video/${file}`).isFile());
+    for (const file of textFiles) {
+        const content = fs.readFileSync(`./video/${file}`, 'utf8');
+        await page.waitForSelector('#app > div:nth-child(2) > section > div:nth-child(2) > textarea', { visible: true });
+        await page.type('#app > div:nth-child(2) > section > div:nth-child(2) > textarea', content);
+        await page.keyboard.press('Enter');
+        // Cliquer sur "generate"
+        try {
+            await page.waitForSelector('#app > div:nth-child(2) > section > div:nth-child(2) > div.row-center-between.mt-2 > button', { visible: true });
+            await page.click('#app > div:nth-child(2) > section > div:nth-child(2) > div.row-center-between.mt-2 > button');
+        } catch (error) {
+            console.error('Erreur lors du clic sur "generate" :', error);
+        }
+
+        // Cliquer sur "download"
+        try {
+            await page.waitForSelector('#app > div:nth-child(2) > section > div.container.upgrade-section > div.card.text-center.mx-auto.p-5.border-0 > button', { visible: true });
+            await page.click('#app > div:nth-child(2) > section > div.container.upgrade-section > div.card.text-center.mx-auto.p-5.border-0 > button');
+        } catch (error) {
+            console.error('Erreur lors du clic sur "download" :', error);
+        }
+        await page.waitForTimeout(1000); // Attente pour la stabilité
+    }
+
+    await browser.close();
+}
+
+run().catch(console.error);
+
+
+
+
+
+fait moi le processuce en boucle a partire de (    const page = await browser.newPage(); ) pour tout les fichier qui sont dans le dossier ./video

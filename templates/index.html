@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface Gemini</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Interface de l'API Gemini</h1>
+        <p>Exemple : Donne moi une histoir de motivation sur un éléve étrangé qui a réussi a convertire les haracélement en motivation</p>
+        <textarea id="prompt" placeholder="Tapez votre prompt ici..."></textarea>
+        <input type="text" id="filename" placeholder="Nom du fichier (sans extension)" />
+        <button onclick="generateResponse()">Envoyer</button>
+        <div id="response-container"></div>
+        <button id="save-button" style="display:none;" onclick="saveFile()">Enregistrer</button>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
